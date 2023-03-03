@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="network," />
+  <meta name="keywords" content="P2P NAT," />
 
 
 
@@ -79,12 +79,12 @@
 
 
 
-<meta name="description" content="一些网络相关的内容">
+<meta name="description" content="P2P网络NAT穿透原理">
 <meta property="og:type" content="article">
-<meta property="og:title" content="网络">
+<meta property="og:title" content="P2P网络NAT穿透原理">
 <meta property="og:url" content="http://example.com/2022/10/17/%E7%BD%91%E7%BB%9C/index.html">
 <meta property="og:site_name" content="Mountain&#39;s Note">
-<meta property="og:description" content="一些网络相关的内容">
+<meta property="og:description" content="P2P网络NAT穿透原理">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://secure2.wostatic.cn/static/caw6cdc6jr2atLwAsTQi7h/image.png?auth_key=1677827140-x9s4kHDpcz14yXeAk4mNpx-0-51e3f7e2c392405be291da914f49b9bd">
 <meta property="og:image" content="https://secure2.wostatic.cn/static/6PhZ9PHyi9eAj17bLE2ert/image.png?auth_key=1677827140-nT2ADsK413DSw2ef142Wpa-0-03c70aa8b044de1d48cbc2ecf515e18c">
@@ -99,9 +99,9 @@
 <meta property="og:image" content="https://secure2.wostatic.cn/static/kExzgji7agSp6qas89oG38/image.png?auth_key=1677827141-mbUSNnp197ym311wjmExmz-0-152eb0887a2d02348091b15592119dab">
 <meta property="og:image" content="https://secure2.wostatic.cn/static/5yf2AbJm4h3sbkP1zZhgH6/image.png?auth_key=1677827140-xoem9n9muFoWm5F8H5bPXt-0-5d3c1937e0df97a01f40b22cbf899c35">
 <meta property="article:published_time" content="2022-10-17T05:35:22.000Z">
-<meta property="article:modified_time" content="2023-03-03T07:07:45.118Z">
+<meta property="article:modified_time" content="2023-03-03T07:11:41.656Z">
 <meta property="article:author" content="mOUNT41N">
-<meta property="article:tag" content="network">
+<meta property="article:tag" content="P2P NAT">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://secure2.wostatic.cn/static/caw6cdc6jr2atLwAsTQi7h/image.png?auth_key=1677827140-x9s4kHDpcz14yXeAk4mNpx-0-51e3f7e2c392405be291da914f49b9bd">
 
@@ -139,7 +139,7 @@
 
 
 
-  <title>网络 | Mountain's Note</title>
+  <title>P2P网络NAT穿透原理 | Mountain's Note</title>
   
 
 
@@ -273,7 +273,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">网络</h1>
+          <h1 class="post-title" itemprop="name headline">P2P网络NAT穿透原理</h1>
         
 
         <div class="post-meta">
@@ -304,8 +304,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/network/" itemprop="url" rel="index">
-                    <span itemprop="name">network</span>
+                  <a href="/categories/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
                   </a>
                 </span>
 
@@ -328,7 +328,7 @@
 
           
               <div class="post-description">
-                  一些网络相关的内容
+                  P2P网络NAT穿透原理
               </div>
           
 
@@ -345,7 +345,7 @@
       
 
       
-        <h1 id="网络"><a href="#网络" class="headerlink" title="网络"></a>网络</h1><h2 id="P2P网络NAT穿透原理-打洞方案"><a href="#P2P网络NAT穿透原理-打洞方案" class="headerlink" title="P2P网络NAT穿透原理(打洞方案)"></a>P2P网络NAT穿透原理(打洞方案)</h2><h3 id="1-关于NAT"><a href="#1-关于NAT" class="headerlink" title="1.关于NAT"></a>1.关于NAT</h3><p>NAT技术（Network Address Translation，网络地址转换）是一种把内部网络（简称为内网）私有IP地址转换为外部网络（简称为外网）公共IP地址的技术，它使得一定范围内的多台主机只利用一个公共IP地址连接到外网，可以在很大程度上缓解了公网IP地址紧缺的问题，同时也能防止外网攻击保障内网安全。如下图：</p>
+        <h1 id="P2P网络NAT穿透原理-打洞方案"><a href="#P2P网络NAT穿透原理-打洞方案" class="headerlink" title="P2P网络NAT穿透原理(打洞方案)"></a>P2P网络NAT穿透原理(打洞方案)</h1><h3 id="1-关于NAT"><a href="#1-关于NAT" class="headerlink" title="1.关于NAT"></a>1.关于NAT</h3><p>NAT技术（Network Address Translation，网络地址转换）是一种把内部网络（简称为内网）私有IP地址转换为外部网络（简称为外网）公共IP地址的技术，它使得一定范围内的多台主机只利用一个公共IP地址连接到外网，可以在很大程度上缓解了公网IP地址紧缺的问题，同时也能防止外网攻击保障内网安全。如下图：</p>
 <p><img src="https://secure2.wostatic.cn/static/caw6cdc6jr2atLwAsTQi7h/image.png?auth_key=1677827140-x9s4kHDpcz14yXeAk4mNpx-0-51e3f7e2c392405be291da914f49b9bd"></p>
 <p>NAT主要的通过对数据包头的地址替换来完成内网计算机访问外网服务器的。当内部机器要访问外部网络时，NAT设备把内网机器的IP与端口号(网络层地址与传输层地址，如：192.168.1.100:666)，转换成 NAT 的外部 IP与端口号(如：100.10.10.10:1666)，发送给外网服务器；数据返回时，再把目的IP和端口端口号(100.10.10.10:1666)的数据包替换为内网机器的IP地址和端口号(192.168.1.100:666)，发给内网机器。若通讯协议的内容中有IP地址的传递，如FTP协议，NAT在转换时还要把数据包内涉及协议地址交互的地方替换，否则协议就会出现地址混乱。在 NAT设备中维护了这个要替换地址的映射表，并根据内部计算机的通讯需求维护该表。外部网络来数据包能否进入内网，主要是看是否已经有可转换的映射表项，若没有就会丢弃。</p>
 <p>下图的例子是内网Client A和Client B访问外网Server，Server回复Client A 和Client B请求，NAT转换IP过程中，通过映射不同端口号区分不用内网主机。</p>
@@ -424,7 +424,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/network/" rel="tag"># network</a>
+            <a href="/tags/P2P-NAT/" rel="tag"># P2P NAT</a>
           
         </div>
       
@@ -577,8 +577,8 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C"><span class="nav-number">1.</span> <span class="nav-text">网络</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#P2P%E7%BD%91%E7%BB%9CNAT%E7%A9%BF%E9%80%8F%E5%8E%9F%E7%90%86-%E6%89%93%E6%B4%9E%E6%96%B9%E6%A1%88"><span class="nav-number">1.1.</span> <span class="nav-text">P2P网络NAT穿透原理(打洞方案)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%85%B3%E4%BA%8ENAT"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.关于NAT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-NAT%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.NAT类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%AE%8C%E5%85%A8%E9%94%A5%E5%BD%A2NAT-Full-Clone-NAT"><span class="nav-number">1.1.2.1.</span> <span class="nav-text">2.1.完全锥形NAT(Full Clone NAT)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E9%99%90%E5%88%B6%E6%80%A7%E9%94%A5%E5%BD%A2NAT-Restricted-Clone-NAT"><span class="nav-number">1.1.2.2.</span> <span class="nav-text">2.2.限制性锥形NAT(Restricted Clone NAT)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E7%AB%AF%E5%8F%A3%E9%99%90%E5%88%B6%E6%80%A7%E9%94%A5%E5%BD%A2NAT-Port-Restricted-Clone-NAT"><span class="nav-number">1.1.2.3.</span> <span class="nav-text">2.3.端口限制性锥形NAT( Port Restricted Clone NAT)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E5%AF%B9%E7%A7%B0%E5%BC%8FNAT-Symmetric-NAT"><span class="nav-number">1.1.2.4.</span> <span class="nav-text">2.4.对称式NAT(Symmetric NAT)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-NAT%E7%A9%BF%E9%80%8F"><span class="nav-number">1.1.3.</span> <span class="nav-text">3.NAT穿透</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E6%A3%80%E6%B5%8BNAT%E7%B1%BB%E5%9E%8B-x20"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">3.1.检测NAT类型   </span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-NAT%E7%A9%BF%E9%80%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E8%83%BD%E5%8A%9B-xA-NAT%E7%A9%BF%E9%80%8F%E5%8E%9F%E7%90%86%E5%A6%82%E4%B8%8B%E5%9B%BE%E5%8F%AF%E4%BB%A5%E7%AE%80%E8%A6%81%E5%88%86%E4%B8%BA6%E6%AD%A5%EF%BC%9A"><span class="nav-number">1.1.3.2.</span> <span class="nav-text">3.2.NAT穿透原理与能力
-NAT穿透原理如下图可以简要分为6步：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E4%B8%A4%E7%A7%8D%E7%89%B9%E6%AE%8A%E7%9A%84P2P%E5%9C%BA%E6%99%AF"><span class="nav-number">1.1.3.3.</span> <span class="nav-text">3.3.两种特殊的P2P场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-TCP%E9%80%9A%E4%BF%A1%E5%8F%8C%E6%96%B9%E5%8F%AA%E6%9C%89%E4%B8%80%E6%96%B9%E5%9C%A8NAT%E5%86%85%E7%BD%91"><span class="nav-number">1.1.3.4.</span> <span class="nav-text">3.3.1.TCP通信双方只有一方在NAT内网</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-2-UDP%E9%80%9A%E4%BF%A1%E5%8F%8C%E6%96%B9%E5%9C%A8%E5%90%8C%E4%B8%80%E4%B8%AANAT%E5%86%85%E7%BD%91"><span class="nav-number">1.1.3.5.</span> <span class="nav-text">3.3.2.UDP通信双方在同一个NAT内网</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DPI"><span class="nav-number">1.2.</span> <span class="nav-text">DPI</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#P2P%E7%BD%91%E7%BB%9CNAT%E7%A9%BF%E9%80%8F%E5%8E%9F%E7%90%86-%E6%89%93%E6%B4%9E%E6%96%B9%E6%A1%88"><span class="nav-number">1.</span> <span class="nav-text">P2P网络NAT穿透原理(打洞方案)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%85%B3%E4%BA%8ENAT"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.关于NAT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-NAT%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.0.2.</span> <span class="nav-text">2.NAT类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%AE%8C%E5%85%A8%E9%94%A5%E5%BD%A2NAT-Full-Clone-NAT"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">2.1.完全锥形NAT(Full Clone NAT)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E9%99%90%E5%88%B6%E6%80%A7%E9%94%A5%E5%BD%A2NAT-Restricted-Clone-NAT"><span class="nav-number">1.0.2.2.</span> <span class="nav-text">2.2.限制性锥形NAT(Restricted Clone NAT)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E7%AB%AF%E5%8F%A3%E9%99%90%E5%88%B6%E6%80%A7%E9%94%A5%E5%BD%A2NAT-Port-Restricted-Clone-NAT"><span class="nav-number">1.0.2.3.</span> <span class="nav-text">2.3.端口限制性锥形NAT( Port Restricted Clone NAT)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E5%AF%B9%E7%A7%B0%E5%BC%8FNAT-Symmetric-NAT"><span class="nav-number">1.0.2.4.</span> <span class="nav-text">2.4.对称式NAT(Symmetric NAT)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-NAT%E7%A9%BF%E9%80%8F"><span class="nav-number">1.0.3.</span> <span class="nav-text">3.NAT穿透</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E6%A3%80%E6%B5%8BNAT%E7%B1%BB%E5%9E%8B-x20"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">3.1.检测NAT类型   </span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-NAT%E7%A9%BF%E9%80%8F%E5%8E%9F%E7%90%86%E4%B8%8E%E8%83%BD%E5%8A%9B-xA-NAT%E7%A9%BF%E9%80%8F%E5%8E%9F%E7%90%86%E5%A6%82%E4%B8%8B%E5%9B%BE%E5%8F%AF%E4%BB%A5%E7%AE%80%E8%A6%81%E5%88%86%E4%B8%BA6%E6%AD%A5%EF%BC%9A"><span class="nav-number">1.0.3.2.</span> <span class="nav-text">3.2.NAT穿透原理与能力
+NAT穿透原理如下图可以简要分为6步：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E4%B8%A4%E7%A7%8D%E7%89%B9%E6%AE%8A%E7%9A%84P2P%E5%9C%BA%E6%99%AF"><span class="nav-number">1.0.3.3.</span> <span class="nav-text">3.3.两种特殊的P2P场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-1-TCP%E9%80%9A%E4%BF%A1%E5%8F%8C%E6%96%B9%E5%8F%AA%E6%9C%89%E4%B8%80%E6%96%B9%E5%9C%A8NAT%E5%86%85%E7%BD%91"><span class="nav-number">1.0.3.4.</span> <span class="nav-text">3.3.1.TCP通信双方只有一方在NAT内网</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-2-UDP%E9%80%9A%E4%BF%A1%E5%8F%8C%E6%96%B9%E5%9C%A8%E5%90%8C%E4%B8%80%E4%B8%AANAT%E5%86%85%E7%BD%91"><span class="nav-number">1.0.3.5.</span> <span class="nav-text">3.3.2.UDP通信双方在同一个NAT内网</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DPI"><span class="nav-number">1.1.</span> <span class="nav-text">DPI</span></a></li></ol></li></ol></div>
             
 
           </div>
