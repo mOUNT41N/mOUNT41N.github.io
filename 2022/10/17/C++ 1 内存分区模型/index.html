@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="P2P NAT," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="P2P网络NAT穿透原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="P2P网络NAT穿透原理">
+<meta property="og:url" content="http://example.com/2022/10/17/C++%201%20%E5%86%85%E5%AD%98%E5%88%86%E5%8C%BA%E6%A8%A1%E5%9E%8B/index.html">
+<meta property="og:site_name" content="Mountain&#39;s Note">
+<meta property="og:description" content="P2P网络NAT穿透原理">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-10-17T05:35:22.000Z">
+<meta property="article:modified_time" content="2023-03-07T08:33:12.509Z">
+<meta property="article:author" content="mOUNT41N">
+<meta property="article:tag" content="P2P NAT">
+<meta name="twitter:card" content="summary">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2022/10/17/C++ 1 内存分区模型/"/>
+
+
+
+
+
+  <title>P2P网络NAT穿透原理 | Mountain's Note</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Mountain's Note</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/17/C++%201%20%E5%86%85%E5%AD%98%E5%88%86%E5%8C%BA%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Mountain's Note">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">P2P网络NAT穿透原理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2022-10-17T13:35:22+08:00">
+                2022-10-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index">
+                    <span itemprop="name">网络</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+              <div class="post-description">
+                  P2P网络NAT穿透原理
+              </div>
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="C-1-内存分区模型"><a href="#C-1-内存分区模型" class="headerlink" title="C++ 1  内存分区模型"></a>C++ 1  内存分区模型</h1><p>此文档为学习黑马程序员c++核心编程中的讲义内容，对其中的一部分说明和代码进行了修改。</p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/mOUNT41N/cpp-learn">mOUNT41N/cpp-learn (github.com)</a></p>
+<p>C++程序在执行时，将内存大方向划分为<strong>4个区域</strong></p>
+<ul>
+<li>代码区：存放函数体的二进制代码，由操作系统进行管理的</li>
+<li>全局区：存放全局变量和静态变量以及常量</li>
+<li>栈区：由编译器自动分配释放, 存放函数的参数值,局部变量等</li>
+<li>堆区：由程序员分配和释放,若程序员不释放,程序结束时由操作系统回收</li>
+</ul>
+<p><strong>内存四区意义：</strong></p>
+<p>不同区域存放的数据，赋予不同的生命周期, 给我们更大的灵活编程</p>
+<h3 id="1-1-程序运行前"><a href="#1-1-程序运行前" class="headerlink" title="1.1 程序运行前"></a>1.1 程序运行前</h3><p>​    在程序编译后，生成了exe可执行程序，<strong>未执行该程序前</strong>分为两个区域</p>
+<p>​    <strong>代码区：</strong></p>
+<p>​        存放 CPU 执行的机器指令</p>
+<p>​        代码区是<strong>共享</strong>的，共享的目的是对于频繁被执行的程序，只需要在内存中有一份代码即可</p>
+<p>​        代码区是<strong>只读</strong>的，使其只读的原因是防止程序意外地修改了它的指令</p>
+<p>​    <strong>全局区：</strong></p>
+<p>​        全局变量和静态变量存放在此.</p>
+<p>​        全局区还包含了常量区, 字符串常量和其他常量也存放在此.</p>
+<p>​        ==该区域的数据在程序结束后由操作系统释放==.</p>
+<p><strong>示例：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="comment">// 全局变量</span></span><br><span class="line"><span class="type">int</span> g_a = <span class="number">10</span>;</span><br><span class="line"><span class="type">int</span> g_b = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 全局常量</span></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> c_g_a = <span class="number">10</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> c_g_b = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 局部变量</span></span><br><span class="line">    <span class="type">int</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="type">int</span> b = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 打印地址</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;局部变量a地址为： &quot;</span> &lt;&lt; &amp;a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;局部变量b地址为： &quot;</span> &lt;&lt; &amp;b &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;全局变量g_a地址为： &quot;</span> &lt;&lt; &amp;g_a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;全局变量g_b地址为： &quot;</span> &lt;&lt; &amp;g_b &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 静态变量</span></span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> s_a = <span class="number">10</span>;</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> s_b = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;静态变量s_a地址为： &quot;</span> &lt;&lt; &amp;s_a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;静态变量s_b地址为： &quot;</span> &lt;&lt; &amp;s_b &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;字符串常量地址为： &quot;</span> &lt;&lt; &amp;<span class="string">&quot;hello world&quot;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;字符串常量地址为： &quot;</span> &lt;&lt; &amp;<span class="string">&quot;hello world1&quot;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;全局常量c_g_a地址为： &quot;</span> &lt;&lt; &amp;c_g_a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;全局常量c_g_b地址为： &quot;</span> &lt;&lt; &amp;c_g_b &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> c_l_a = <span class="number">10</span>;</span><br><span class="line">    <span class="type">const</span> <span class="type">int</span> c_l_b = <span class="number">10</span>;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;局部常量c_l_a地址为： &quot;</span> &lt;&lt; &amp;c_l_a &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;局部常量c_l_b地址为： &quot;</span> &lt;&lt; &amp;c_l_b &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总结：</p>
+<ul>
+<li>C++中在程序运行前分为<strong>全局区</strong>和<strong>代码区</strong></li>
+<li>代码区特点是<strong>共享</strong>和<strong>只读</strong></li>
+<li>全局区中存放<strong>全局变量</strong>、<strong>静态变量</strong>、<strong>常量</strong></li>
+<li>常量区中存放 const 修饰的<strong>全局常量</strong>  和 <strong>字符串常量</strong></li>
+</ul>
+<h3 id="1-2-程序运行后"><a href="#1-2-程序运行后" class="headerlink" title="1.2 程序运行后"></a>1.2 程序运行后</h3><p>​    <strong>栈区：</strong></p>
+<p>​        由编译器<strong>自动分配释放</strong>, 存放函数的参数值,局部变量等</p>
+<p>​        注意事项：不要返回局部变量的地址，栈区开辟的数据由编译器<strong>自动释放</strong></p>
+<p><strong>示例1：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="type">static</span> <span class="type">int</span> b = <span class="number">10</span>;</span><br><span class="line"><span class="function"><span class="type">int</span> *<span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> a = <span class="number">10</span>;</span><br><span class="line">    <span class="comment">// return &amp;a; // address of local variable &#x27;a&#x27; returned</span></span><br><span class="line">    <span class="keyword">return</span> &amp;b;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> *p = <span class="built_in">func</span>();</span><br><span class="line">    cout &lt;&lt; p &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; *p &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>​    <strong>堆区：</strong></p>
+<p>​        由程序员分配释放,若程序员不释放,程序结束时由操作系统回收</p>
+<p>​        在C++中主要利用<strong>new</strong>在堆区开辟内存</p>
+<p><strong>示例2：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> *<span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> *a = <span class="keyword">new</span> <span class="built_in">int</span>(<span class="number">10</span>);</span><br><span class="line">    cout &lt;&lt; a &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> *p = <span class="built_in">func</span>();</span><br><span class="line">    cout &lt;&lt; p &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; *p &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>总结：</strong></p>
+<p><strong>堆区</strong>数据由程序员管理开辟和释放</p>
+<p>堆区数据利用<strong>new</strong>关键字进行开辟内存</p>
+<h3 id="1-3-new操作符"><a href="#1-3-new操作符" class="headerlink" title="1.3 new操作符"></a>1.3 new操作符</h3><p>​    C++中利用==new==操作符在堆区开辟数据</p>
+<p>​    堆区开辟的数据，由程序员手动开辟，手动释放，释放利用操作符 ==delete==</p>
+<p>​    语法：<code> new 数据类型</code></p>
+<p>​    利用new创建的数据，会返回该数据对应的类型的指针</p>
+<p><strong>示例1： 基本语法</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="function"><span class="type">int</span> *<span class="title">func</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> *a = <span class="keyword">new</span> <span class="built_in">int</span>(<span class="number">10</span>);</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> *p = <span class="built_in">func</span>();</span><br><span class="line">    cout &lt;&lt; p &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; *p &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">delete</span> p; <span class="comment">// 利用delete释放堆区数据</span></span><br><span class="line">    <span class="comment">// cout &lt;&lt; *p &lt;&lt; endl; //报错，释放的空间不可访问</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例2：开辟数组</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="comment">// 堆区开辟数组</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> *arr = <span class="keyword">new</span> <span class="type">int</span>[<span class="number">10</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        arr[i] = i + <span class="number">100</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; arr[i] &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">delete</span>[] arr; <span class="comment">// 释放数组 delete 后加 []</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/P2P-NAT/" rel="tag"># P2P NAT</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2022/10/17/P2P%E7%BD%91%E7%BB%9CNAT%E7%A9%BF%E9%80%8F%E5%8E%9F%E7%90%86/" rel="next" title="P2P网络NAT穿透原理">
+                <i class="fa fa-chevron-left"></i> P2P网络NAT穿透原理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/%7C%7C%20archive">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">categories</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#C-1-%E5%86%85%E5%AD%98%E5%88%86%E5%8C%BA%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">C++ 1  内存分区模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E5%89%8D"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.1 程序运行前</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E5%90%8E"><span class="nav-number">1.0.2.</span> <span class="nav-text">1.2 程序运行后</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-new%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="nav-number">1.0.3.</span> <span class="nav-text">1.3 new操作符</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">mOUNT41N</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
